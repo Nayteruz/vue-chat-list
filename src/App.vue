@@ -40,6 +40,7 @@
 import {reactive, onMounted, ref } from "vue";
 import { db, ref_db, set_db, child_db, get_db } from "./db.js"
 import {useChatStore} from "@/store/chat-store";
+import { uuid } from 'vue-uuid';
 
 export default {
   name: 'App',
@@ -48,6 +49,7 @@ export default {
     const inputUsername = ref('');
     const inputMessage = ref('');
     const storeChat = useChatStore();
+
 
     const state = reactive({
       username: '',
@@ -68,10 +70,11 @@ export default {
 
       const messageU = {
         username: state.username,
-        content: inputMessage.value
+        content: inputMessage.value,
+        timestamp: Date.now()
       }
 
-      set_db(ref_db(db, 'messages/' + Date.now()), {...messageU})
+      set_db(ref_db(db, 'messages/' + uuid.v1()), {...messageU})
         .then(() => {
           inputMessage.value = "";
           getMessageList();
